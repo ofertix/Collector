@@ -1,0 +1,71 @@
+storage:
+  storage_1:
+    class: \Stats\Storage\Mongo\Factory
+    config:
+      server: 'mongodb://localhost:27017'
+      default_database: 'stats_myproject'
+      autorotate: false
+      events_time_to_store: 365 # days
+
+output:
+  storage: storage_1
+
+channel:
+  class: \Stats\Channel\RabbitMQ
+  config:
+    debug: false
+    host: localhost
+    port: 5672
+    user: guest
+    pass: guest
+    vhost: '/'
+    exchanges:
+      - stats
+      - events
+#  class: \Stats\Channel\ZeroMQ
+#  config:
+#    socket:
+#      stats:  'epgm://eth0;224.1.1.1:5557'
+#      events: 'epgm://eth0;224.1.1.1:5558'
+
+
+stats:
+  default_types:
+    time:
+      operations:
+        - 'median'
+        - 'percentile_95'
+        - 'max'
+        - 'min'
+      retentions:
+        - '60s:1d'
+        - '1h:15d'
+
+    counter:
+      operations:
+        - 'count'
+      retentions:
+        - '1m:1d'
+        - '1h:15d'
+
+#  overrides:
+#    error404:
+#      pattern: '404'
+#      types:
+#        counter:
+#          operations:
+#            - 'count'
+#            - 'percentile_95'
+#          retentions:
+#            - '10m:15d'
+#            - '60s:15d'
+#    login:
+#      pattern: 'login.*'
+#      types:
+#        counter:
+#          operations:
+#            - 'count'
+#          retentions:
+#            - '60s:1d'
+
+    
