@@ -14,6 +14,6 @@ use Symfony\Component\Yaml\Yaml;
 
 require __DIR__ . '/../vendor/stats/web/bootstrap.php';
 
-$app['config'] = Yaml::parse(__DIR__ . '/../config/stats_test.yml');
+$app['config'] = Yaml::parse(__DIR__ . '/../app/config/stats_test.yml');
 
 $app->run();
