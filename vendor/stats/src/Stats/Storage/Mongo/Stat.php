@@ -149,8 +149,7 @@ db.$collection_name.update({_id : e._id}, e);
             // delete old data
             $this->work_todo['autorotate'][$collection_name] = $retention['time_to_store'];
 
-//            $this->doWorkTodo();
-            $this->doWorkTodo(true);
+            $this->doWorkTodo();
         }
     }
 
