@@ -17,6 +17,7 @@ class Stat
     protected $mongo;
     protected $db;
     protected $autorotate = false;
+    protected $autoclean_raw_data_time = 2; // hours before current data ts
 
     protected $work_todo = array();
     protected $work_todo_do_work_every_n_seconds = 60;
@@ -148,7 +149,8 @@ db.$collection_name.update({_id : e._id}, e);
             // delete old data
             $this->work_todo['autorotate'][$collection_name] = $retention['time_to_store'];
 
-            $this->doWorkTodo();
+//            $this->doWorkTodo();
+            $this->doWorkTodo(true);
         }
     }
 
@@ -181,14 +183,30 @@ db.$collection_name.update({_id : e._id}, e);
         $db = $this->getDb();
         foreach ($this->work_todo['calculates'] as $collection_name => $items)
         {
-            foreach ($items as $item)
+            foreach ($items as $ts => $item)
             {
                 $response = $db->execute($item);
+
+                // autoclean old raw data
+                $this->doAutocleanRawData($ts, $collection_name, $db);
             }
         }
 
         // clear calculates to do
         $this->work_todo['calculates'] = array();
+    }
+
+    protected function doAutocleanRawData($ts, $collection_name, $db)
+    {
+        $ts_mongo = new \MongoDate(($ts / 1000) - (3600 * $this->autoclean_raw_data_time));
+        $db->$collection_name->update(
+            array(
+                'ts' => array('$lte' => $ts_mongo),
+                'raw' => array('$exists' => true)
+            ),
+            array('$unset' => array('raw' => 1)),
+            array('multiple' => true)
+        );
     }
 
     protected function doAutorotate()
