@@ -11,13 +11,16 @@
  */
 
 // silex
-require_once __DIR__ . '/../vendor/silex/silex.phar';
+require_once __DIR__ . '/../../silex/silex.phar';
 $app = new Silex\Application();
 
 // load config
+$vendorDir = __DIR__ . "/../../";
 $app['autoloader']->registerNamespaces(array(
     'Stats' => __DIR__ . "/../src/",
-    'Symfony' => __DIR__ . "/../vendor/",
+    'Symfony\\Component\\Yaml' => $vendorDir . '/symfony/yaml/',
+    'Symfony\\Component\\Console' => $vendorDir . '/symfony/console/',
+    'Symfony\\Component\\ClassLoader' => $vendorDir . '/symfony/class-loader/',
 ));
 // routes
 $app->match('/stats_events/{stat}/{metric}/{round_decimal}/{fill_blanks}', function ($stat, $metric, $round_decimal, $fill_blanks) use ($app)
