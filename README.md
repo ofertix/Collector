@@ -20,7 +20,7 @@ Also "Collector" offers a JSON API to query stored stats (used by WebUIStats com
 Requirements
 ============
 
-- PHP 5.3.2 and up.
+- PHP 5.3.2 and up with pcntl extension installed.
 - RabbitMQ or ZMQ.
 - MongoDB
 
